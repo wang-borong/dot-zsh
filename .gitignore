@@ -2,4 +2,5 @@ external/*
 !external/smartcd/
 themes/*
 !themes/soimort/
+custom/*
 *.zwc
