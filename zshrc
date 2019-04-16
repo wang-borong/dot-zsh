@@ -14,8 +14,8 @@ if [ -z $ZSH ]; then
   ZSH=~/.zshrc.d
 fi
 
-fpath=($ZSH/functions $ZSH/completions $ZSH/plugins $fpath)
-autoload -Uz compaudit compinit && compinit
+fpath=($ZSH/functions $ZSH/completions $ZSH/plugins ${ZSH}/external/zsh-completions/src $fpath)
+autoload -Uz compaudit compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
 
 if [[ ! -e ~/.zcompdump.zwc ]]; then
     zcompile ~/.zcompdump
@@ -34,6 +34,11 @@ export FZF_BASE=$ZSH/external/fzf
 for plugin in $ZSH/plugins/*.zsh; do
   [ ! -e $plugin.zwc ] && zcompile $plugin
   . $plugin
+done
+
+for custom in $ZSH/custom/*.zsh; do
+    [ ! -e $custom.zwc ] && zcompile $custom
+    . $custom
 done
 
 # EDITOR
