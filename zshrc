@@ -206,9 +206,8 @@ else
 fi
 
 
-#. $ZSH/themes/powerlevel9k/powerlevel9k.zsh-theme
-#. $ZSH/themes/p9kgt.zsh
-. $ZSH/themes/spaceship-prompt/spaceship.zsh
+#. $ZSH/themes/spaceship-prompt/spaceship.zsh
+. $ZSH/themes/soimort/soimort.zsh
 
 . $ZSH/external/smartcd/smartcd.zsh
 #. $ZSH/external/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
