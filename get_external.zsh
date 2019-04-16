@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 [[ ! -d external ]] && mkdir external
 cd external
 git clone https://github.com/zsh-users/zsh-autosuggestions
