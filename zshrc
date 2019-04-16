@@ -213,6 +213,7 @@ fi
 . $ZSH/external/smartcd/smartcd.zsh
 #. $ZSH/external/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 #. $ZSH/external/zsh-autosuggestions/zsh-autosuggestions.zsh
+. $ZSH/external/z.lua/z.lua.plugin.zsh
 
 # Support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
