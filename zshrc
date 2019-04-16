@@ -1,6 +1,6 @@
 
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
-  print "ERROR: Zim didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
+  print "ERROR: Zshrc didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
   return 1
 fi
 
