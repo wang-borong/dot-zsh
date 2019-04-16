@@ -36,7 +36,7 @@ for plugin in $ZSH/plugins/*.zsh; do
   . $plugin
 done
 
-for custom in $ZSH/custom/*.zsh; do
+for custom ($ZSH/custom/*.zsh(N)); do
     [ ! -e $custom.zwc ] && zcompile $custom
     . $custom
 done
