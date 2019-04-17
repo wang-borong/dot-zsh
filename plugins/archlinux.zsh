@@ -1,6 +1,7 @@
 if ! (( $+commands[pacman] )); then
     return
 fi
+
 if (( $+commands[trizen] )); then
   alias trconf='trizen -C'
   alias trupg='trizen -Syua'
@@ -220,3 +221,12 @@ if (( $+commands[xdg-open] )); then
     xdg-open "https://www.archlinux.org/packages/$repo/$arch/$pkg/" &>/dev/null
   }
 fi
+
+# Remove single package for archlinux
+function orphans() {
+    if [[ ! -n $(pacman -Qdt) ]]; then
+        print "no orphans to remove"
+    else
+        sudo pacman -Rs $(pacman -Qdtq)
+    fi
+}

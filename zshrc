@@ -1,3 +1,6 @@
+#
+# Zshrc by Jason Wang
+#
 
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
     print "ERROR: Zshrc didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
@@ -128,7 +131,6 @@ export LESS_TERMCAP_se=$'\E[0m'
 export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
-
 
 #. $ZSH/themes/spaceship-prompt/spaceship.zsh
 . $ZSH/themes/soimort/soimort.zsh

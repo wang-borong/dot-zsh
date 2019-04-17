@@ -65,7 +65,7 @@ git-merge-to() {
     fi
     git checkout $1
     git merge --no-ff "$bn" -m "$3"
-    echo "$bn"
+    print "$bn"
 }
 
 gmtm() {
@@ -104,8 +104,8 @@ any() {
     emulate -L zsh
     unsetopt KSH_ARRAYS
     if [[ -z "$1" ]] ; then
-        echo "any - grep for process(es) by keyword" >&2
-        echo "Usage: any <keyword>" >&2 ; return 1
+        print "any - grep for process(es) by keyword" >&2
+        print "Usage: any <keyword>" >&2 ; return 1
     else
         ps xauwww | grep -i "[${1[1]}]${1[2,-1]}"
     fi
@@ -245,13 +245,6 @@ fv() {
 }
 
 
-# Find command[s] in zsh history
-# ag and hg are renamed to af and hf respectively
-hf() {
-    history | grep "$*"
-}
-
-
 # Create a directory and cd to it
 mkcd() {
     if (( ARGC != 1 )); then
@@ -276,30 +269,6 @@ mvt() {
         mv $item ~/tmp
     done
 }
-
-
-# Remove single package for archlinux
-if [[ $ID_LIKE == 'arch' ]]; then
-    orphans() {
-        if [[ ! -n $(pacman -Qdt) ]]; then
-          echo no orphans to remove
-        else
-          sudo pacman -Rs $(pacman -Qdtq)
-        fi
-    }
-fi
-
-
-# Another method for quick change directories. Add this to your ~/.zshrc, then just enter “cd …./dir”
-rationalise-dot() {
-  if [[ $LBUFFER = *.. ]]; then
-    LBUFFER+=/..
-  else
-    LBUFFER+=.
-  fi
-}
-zle -N rationalise-dot
-bindkey . rationalise-dot
 
 
 # recovering from "git reset --hard ..."
@@ -457,7 +426,7 @@ se() {
         esac
 
         if ! check_cmd ${DECOMP_CMD[(w)1]}; then
-            echo "ERROR: ${DECOMP_CMD[(w)1]} not installed." >&2
+            print "ERROR: ${DECOMP_CMD[(w)1]} not installed." >&2
             RC=$((RC+2))
             continue
         fi
@@ -582,11 +551,13 @@ ww() {
     esac
 }
 
+
 # Copies the pathname of the current directory to the system or X Windows clipboard
 function copydir {
   emulate -L zsh
   print -n $PWD | clipcopy
 }
+
 
 # A quick grep-for-processes.
 psl() {
@@ -597,6 +568,7 @@ psl() {
   fi
 }
 
+
 # View a Python module in Vim.
 vipy() {
   p=`python -c "import $1; print $1.__file__.replace('.pyc','.py')"`
@@ -606,11 +578,12 @@ vipy() {
   # errors will be printed by python
 }
 
+
 # Everything Git-related
 # Commit everything, use args as message.
 sci() {
   if [ $# = 0 ]; then
-    echo "usage: $0 message..." >&2
+    print "usage: $0 message..." >&2
     return 1
   fi
   git add -A && \
@@ -623,8 +596,13 @@ sci() {
   hr done
 }
 
-# this one's from Ari
-# Function Usage: doc packagename
-#                 doc pac<TAB>
-doc() { cd /usr/share/doc/$1 && ls }
-compdef '_files -W /usr/share/doc -/' doc
+# Compile zsh files
+compile_zsh_files() {
+    for file ($ZSH/lib/*.zsh $ZSH/plugins/*.zsh $ZSH/custom/*.zsh(N)); do
+        zcompile $file
+    done
+
+    builtin cd ~
+    zcompile .zshrc .zshrc.local
+}
+
