@@ -9,6 +9,10 @@
 # If you would like to clear your cache, go ahead and do a
 # "zsh-pip-clear-cache".
 
+if ! (( $+commands[pip] )); then
+    return
+fi
+
 ZSH_PIP_CACHE_FILE=~/.pip/zsh-cache
 ZSH_PIP_INDEXES=(https://pypi.org/simple/)
 

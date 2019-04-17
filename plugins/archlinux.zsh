@@ -1,3 +1,6 @@
+if ! (( $+commands[pacman] )); then
+    return
+fi
 if (( $+commands[trizen] )); then
   alias trconf='trizen -C'
   alias trupg='trizen -Syua'

@@ -4,6 +4,11 @@
 #        AUTHOR:  Mirko Caserta (mirko.caserta@gmail.com)
 #       VERSION:  1.0.2
 # ------------------------------------------------------------------------------
+
+
+if ! (( $+commands[sbt] )); then
+    return
+fi
  
 # aliases - mnemonic: prefix is 'sb'
 alias sbc='sbt compile'

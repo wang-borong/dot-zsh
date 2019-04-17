@@ -9,6 +9,10 @@
 #
 # Debian, Ubuntu and friends related zsh aliases and functions for zsh
 
+if ! (( $+commands[apt] )); then
+    return
+fi
+
 (( $+commands[apt] )) && APT=apt || APT=apt-get
 
 alias acs='apt-cache search'
