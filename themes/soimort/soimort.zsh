@@ -4,7 +4,8 @@
 # @author       Mort Yao <soi@mort.ninja>
 # @modifier     Jason Wang <1724555125@qq.com>
 
-. ${0:A:h}/theme-and-appearance.zsh
+autoload -U colors && colors
+setopt prompt_subst
 
 local ret_status="%(?:%{$fg[green]%}[%{$reset_color%}\
 %{$fg_bold[green]%}♥%{$reset_color%}\
