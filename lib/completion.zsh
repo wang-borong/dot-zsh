@@ -87,3 +87,6 @@ zstyle ':completion:*:rm:*' file-patterns '*:all-files'
 # completion, otherwise _ssh_hosts will fall through and read the ~/.ssh/config
 zstyle -e ':completion:*:*:ssh:*:my-accounts' users-hosts \
   '[[ -f ${HOME}/.ssh/config && ${key} == hosts ]] && key=my_hosts reply=()'
+
+# Turn off slow git branch completion. http://stackoverflow.com/q/12175277/102704
+zstyle :completion::complete:git-checkout:argument-rest:headrefs command "git for-each-ref --format='%(refname)' refs/heads 2>/dev/null"

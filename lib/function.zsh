@@ -588,3 +588,43 @@ function copydir {
   print -n $PWD | clipcopy
 }
 
+# A quick grep-for-processes.
+psl() {
+  if _is SunOS; then
+    ps -Af | grep -i $1 | grep -v grep
+  else
+    ps auxww | grep -i $1 | grep -v grep
+  fi
+}
+
+# View a Python module in Vim.
+vipy() {
+  p=`python -c "import $1; print $1.__file__.replace('.pyc','.py')"`
+  if [ $? = 0 ]; then
+    vi -R "$p"
+  fi
+  # errors will be printed by python
+}
+
+# Everything Git-related
+# Commit everything, use args as message.
+sci() {
+  if [ $# = 0 ]; then
+    echo "usage: $0 message..." >&2
+    return 1
+  fi
+  git add -A && \
+  hr staging && \
+  git status && \
+  hr committing && \
+  git cim "$*" && \
+  hr results && \
+  git quicklog && \
+  hr done
+}
+
+# this one's from Ari
+# Function Usage: doc packagename
+#                 doc pac<TAB>
+doc() { cd /usr/share/doc/$1 && ls }
+compdef '_files -W /usr/share/doc -/' doc
