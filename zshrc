@@ -44,12 +44,8 @@ for custom ($ZSH/custom/*.zsh(N)); do
 done
 
 # PATH
-_force_prepend_to_path /usr/local/sbin
-_force_prepend_to_path /usr/local/bin
-_force_prepend_to_path ~/.local/bin
-_force_prepend_to_path ~/bin
-
-_append_to_path /usr/sbin
+_append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
+    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
 
 # EDITOR
 if _has nvim; then

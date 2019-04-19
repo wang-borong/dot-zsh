@@ -20,3 +20,11 @@ _append_to_path() {
 _force_prepend_to_path() {
     path=($1 ${(@)path:#$1})
 }
+
+_append_paths_if_nonexist() {
+    for p in $@; do
+        if [[ ! $path =~ "$p" ]]; then
+            _force_prepend_to_path $p
+        fi
+    done
+}
