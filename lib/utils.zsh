@@ -23,8 +23,8 @@ _force_prepend_to_path() {
 
 _append_paths_if_nonexist() {
     for p in $@; do
-        if [[ ! $path =~ "$p" ]]; then
-            _force_prepend_to_path $p
+        if [[ ! -L $p ]]; then
+            _prepend_to_path $p
         fi
     done
 }
