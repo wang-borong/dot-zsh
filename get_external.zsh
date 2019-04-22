@@ -7,8 +7,9 @@ git clone https://github.com/zsh-users/zsh-completions.git
 git clone https://github.com/skywind3000/z.lua
 git clone https://github.com/seebi/dircolors-solarized
 git clone https://github.com/junegunn/fzf
+cd fzf && ./install --bin
 
-cd ../themes
+cd ../../themes
 git clone https://github.com/denysdovhan/spaceship-prompt.git
 
 mkdir custom
