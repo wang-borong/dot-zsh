@@ -561,11 +561,7 @@ function copydir {
 
 # A quick grep-for-processes.
 psl() {
-  if _is SunOS; then
-    ps -Af | grep -i $1 | grep -v grep
-  else
     ps auxww | grep -i $1 | grep -v grep
-  fi
 }
 
 
