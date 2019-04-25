@@ -559,12 +559,6 @@ function copydir {
 }
 
 
-# A quick grep-for-processes.
-psl() {
-    ps auxww | grep -i $1 | grep -v grep
-}
-
-
 # View a Python module in Vim.
 vipy() {
   p=`python -c "import $1; print $1.__file__.replace('.pyc','.py')"`

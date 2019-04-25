@@ -16,28 +16,24 @@ if [ -z $ZSH ]; then
     ZSH=~/.zshrc.d
 fi
 
+export FZF_BASE=$ZSH/external/fzf
 fpath=($ZSH/functions $ZSH/completions $ZSH/plugins ${ZSH}/external/zsh-completions/src $fpath)
 autoload -Uz compaudit compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
 
 if [[ ! -e ~/.zcompdump.zwc ]]; then
     zcompile ~/.zcompdump
 fi
-
 if [[ ! -r ~/.zshrc.zwc ]]; then
     zcompile ~/.zshrc
 fi
-
 for config_file in $ZSH/lib/*.zsh; do
     [ ! -e $config_file.zwc ] && zcompile $config_file
     . $config_file
 done
-
-export FZF_BASE=$ZSH/external/fzf
 for plugin in $ZSH/plugins/*.zsh; do
     [ ! -e $plugin.zwc ] && zcompile $plugin
     . $plugin
 done
-
 for custom ($ZSH/custom/*.zsh(N)); do
     [ ! -e $custom.zwc ] && zcompile $custom
     . $custom
@@ -63,37 +59,6 @@ fi
 if [ -z $LANG ]; then
     export LANG=en_US
 fi
-
-if _has rg; then
-    alias rg='rg --colors path:fg:green --colors match:fg:red'
-    alias ag=rg
-    alias ack=rg
-elif _has ag; then
-    alias ack=ag
-    alias ag='ag --color-path 1\;31 --color-match 1\;32 --color'
-elif _has ack; then
-    if ! _color; then
-        alias ack='ack --nocolor'
-    fi
-fi
-
-# ack is really useful. I usually look for code and then edit all of the files
-# containing that code. Changing `ack' to `vack' does this for me.
-if _has rg; then
-    vack() {
-        vim `rg --color=never -l $@`
-    }
-elif _has ag; then
-    vack() {
-        vim `ag --nocolor -l $@`
-    }
-else
-    vack() {
-        vim `ack -l $@`
-    }
-fi
-alias vag=vack
-alias vrg=vack
 
 # THEME
 # if we have a screen, we can try a colored screen
@@ -132,8 +97,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 . $ZSH/themes/soimort/soimort.zsh
 
 . $ZSH/external/smartcd/smartcd.zsh
-#. $ZSH/external/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#. $ZSH/external/zsh-autosuggestions/zsh-autosuggestions.zsh
 . $ZSH/external/z.lua/z.lua.plugin.zsh
 
 if [[ -r ~/.zshrc.local ]]; then
