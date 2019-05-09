@@ -9,7 +9,7 @@ Installation
 .. code:: bash
 
    git clone https://github.com/stuha/dot-zsh ~/.zshrc.d
-   cd ~/.zshrc.d && ./get_external.zsh
+   cd ~/.zshrc.d && ./install.sh
    cd ~ && ln -s .zshrc.d/zshrc .zshrc
    # and coding your local zshrc
    vim .zshrc.local
