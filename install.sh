@@ -9,8 +9,8 @@ git clone https://github.com/seebi/dircolors-solarized
 git clone https://github.com/junegunn/fzf
 cd fzf && ./install --bin
 
-cd ../../themes
-git clone https://github.com/denysdovhan/spaceship-prompt.git
+#cd ../../themes
+#git clone https://github.com/denysdovhan/spaceship-prompt.git
 
 mkdir custom
 cd ~ && ln -s .zshrc.d/zshrc .zshrc
