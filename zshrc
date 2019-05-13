@@ -13,7 +13,7 @@ typeset -U path PATH cdpath CDPATH fpath FPATH manpath MANPATH PYTHONPATH
 unalias -a
 
 if [ -z $ZSH ]; then
-    ZSH=~/.zshrc.d
+    ZSH=~/.zsh
 fi
 
 export FZF_BASE=$ZSH/external/fzf

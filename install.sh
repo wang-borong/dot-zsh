@@ -13,4 +13,4 @@ cd fzf && ./install --bin
 #git clone https://github.com/denysdovhan/spaceship-prompt.git
 
 mkdir custom
-cd ~ && ln -s .zshrc.d/zshrc .zshrc
+cd ~ && ln -s .zsh/zshrc .zshrc
