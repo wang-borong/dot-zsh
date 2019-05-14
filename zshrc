@@ -20,38 +20,6 @@ export FZF_BASE=$ZSH/external/fzf
 fpath=($ZSH/functions $ZSH/completions $ZSH/plugins ${ZSH}/external/zsh-completions/src $fpath)
 autoload -Uz compaudit compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
 
-if [[ ! -e ~/.zcompdump.zwc ]]; then
-    zcompile ~/.zcompdump
-fi
-if [[ ! -r ~/.zshrc.zwc ]]; then
-    zcompile ~/.zshrc
-fi
-for config_file in $ZSH/lib/*.zsh; do
-    [ ! -e $config_file.zwc ] && zcompile $config_file
-    . $config_file
-done
-for plugin in $ZSH/plugins/*.zsh; do
-    [ ! -e $plugin.zwc ] && zcompile $plugin
-    . $plugin
-done
-for custom ($ZSH/custom/*.zsh(N)); do
-    [ ! -e $custom.zwc ] && zcompile $custom
-    . $custom
-done
-
-# PATH
-_append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
-    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
-
-# EDITOR
-if _has nvim; then
-    export EDITOR=nvim VISUAL=nvim
-elif _has vim; then
-    export EDITOR=vim VISUAL=vim
-else 
-    export EDITOR=vi VISUAL=vi
-fi
-
 # Overridable locale support.
 if [ -z $$LC_ALL ]; then
     export LC_ALL=C
@@ -83,6 +51,7 @@ if [[ -a $ZSH_DIRCOLORS ]]; then
 else
     which dircolors > /dev/null && eval "`dircolors -b`"
 fi
+export LS_COLORS
 
 # Support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
@@ -92,6 +61,38 @@ export LESS_TERMCAP_se=$'\E[0m'
 export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
+
+if [[ ! -e ~/.zcompdump.zwc ]]; then
+    zcompile ~/.zcompdump
+fi
+if [[ ! -r ~/.zshrc.zwc ]]; then
+    zcompile ~/.zshrc
+fi
+for config_file in $ZSH/lib/*.zsh; do
+    [ ! -e $config_file.zwc ] && zcompile $config_file
+    . $config_file
+done
+for plugin in $ZSH/plugins/*.zsh; do
+    [ ! -e $plugin.zwc ] && zcompile $plugin
+    . $plugin
+done
+for custom ($ZSH/custom/*.zsh(N)); do
+    [ ! -e $custom.zwc ] && zcompile $custom
+    . $custom
+done
+
+# PATH
+_append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
+    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
+
+# EDITOR
+if _has nvim; then
+    export EDITOR=nvim VISUAL=nvim
+elif _has vim; then
+    export EDITOR=vim VISUAL=vim
+else 
+    export EDITOR=vi VISUAL=vi
+fi
 
 #. $ZSH/themes/spaceship-prompt/spaceship.zsh
 . $ZSH/themes/soimort/soimort.zsh
