@@ -51,7 +51,6 @@ if [[ -a $ZSH_DIRCOLORS ]]; then
 else
     which dircolors > /dev/null && eval "`dircolors -b`"
 fi
-export LS_COLORS
 
 # Support colors in less
 export LESS_TERMCAP_mb=$'\E[01;31m'
