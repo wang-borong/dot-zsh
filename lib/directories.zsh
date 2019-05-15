@@ -1,13 +1,8 @@
 # Changing/making/removing directory
+setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushdminus
-
-alias ..='cd ..'
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ......='../../../../..'
 
 alias -- -='cd -'
 alias 1='cd -'
@@ -26,7 +21,7 @@ alias d='dirs -v | head -10'
 
 # List directory contents
 alias ls='ls --color=auto'
-alias lsa='ls -lah'
-alias l='ls -lah'
-alias ll='ls -lh'
+#alias lsa='ls -lah'
+alias l='ls -lh'
+alias ll='ls -lah'
 alias la='ls -lAh'
