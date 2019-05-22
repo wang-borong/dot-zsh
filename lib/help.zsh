@@ -46,3 +46,14 @@ H-Glob() {
   echo /proc/*/cwd(:h:t:s/self//) # Analogous to >ps ax | awk '{print $1}'<"
 }
 alias hzg=H-Glob
+
+update-zsh-external() {
+    extern=(dircolors-solarized fzf z.lua zsh-completions)
+    opwd=$PWD
+    for ext in ${extern}; do
+        builtin cd $ZSH/external/$ext && git pull >/dev/null 2>&1
+        print "$ext updated"
+    done
+    builtin cd $opwd
+}
+alias uze=update-zsh-external
