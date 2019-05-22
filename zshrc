@@ -67,11 +67,11 @@ fi
 if [[ ! -r ~/.zshrc.zwc ]]; then
     zcompile ~/.zshrc
 fi
-for config_file in $ZSH/lib/*.zsh; do
+for config_file in $ZSH/lib/**/*.zsh; do
     [ ! -e $config_file.zwc ] && zcompile $config_file
     . $config_file
 done
-for plugin in $ZSH/plugins/*.zsh; do
+for plugin in $ZSH/plugins/**/*.zsh; do
     [ ! -e $plugin.zwc ] && zcompile $plugin
     . $plugin
 done
