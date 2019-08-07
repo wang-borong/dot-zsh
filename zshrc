@@ -99,6 +99,9 @@ fi
 . $ZSH/external/smartcd/smartcd.zsh
 . $ZSH/external/z.lua/z.lua.plugin.zsh
 
+# setup interactive comments
+setopt interactivecomments
+
 if [[ -r ~/.zshrc.local ]]; then
     if [[ ! -e ~/.zshrc.local.zwc ]]; then
         zcompile ~/.zshrc.local
