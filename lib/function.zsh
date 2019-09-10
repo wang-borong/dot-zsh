@@ -600,7 +600,7 @@ compile_zsh_files() {
 genctags() {
     if [[ -n $1 ]]; then
         if [[ -d $1 ]]; then
-            srcdir=$1
+            srcdir=$(realpath $1)
         else
             srcdir=$PWD
         fi
@@ -615,5 +615,5 @@ genctags() {
     rm -f $srcdir/cscope.files
 
     export CSCOPE_DB="$srcdir/cscope.out"
-    print "Exported CSCOPE_DB of $(basename $srcdir)"
+    print "Exported CSCOPE_DB for $(basename $srcdir)"
 }
