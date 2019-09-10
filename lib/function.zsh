@@ -596,3 +596,24 @@ compile_zsh_files() {
     zcompile .zshrc .zshrc.local
 }
 
+# Generate cscope database for C projects
+genctags() {
+    if [[ -n $1 ]]; then
+        if [[ -d $1 ]]; then
+            srcdir=$1
+        else
+            srcdir=$PWD
+        fi
+    else
+        srcdir=$PWD
+    fi
+    print "Finding files ..."
+    find "$srcdir" -name '*.[ch]' > "$srcdir/cscope.files"
+
+    print "Adding files to cscope db: $srcdir/cscope.db ..."
+    cscope -b -i "$srcdir/cscope.files"
+    rm -f $srcdir/cscope.files
+
+    export CSCOPE_DB="$srcdir/cscope.out"
+    print "Exported CSCOPE_DB of $(basename $srcdir)"
+}
