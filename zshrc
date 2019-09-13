@@ -94,7 +94,12 @@ else
 fi
 
 #. $ZSH/themes/spaceship-prompt/spaceship.zsh
-. $ZSH/themes/soimort/soimort.zsh
+if _has starship; then
+    # Prerequisite Powerline font
+    eval "$(starship init zsh)"
+else
+    . $ZSH/themes/soimort/soimort.zsh
+fi
 
 . $ZSH/external/smartcd/smartcd.zsh
 . $ZSH/external/z.lua/z.lua.plugin.zsh
