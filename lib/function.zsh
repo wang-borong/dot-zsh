@@ -47,13 +47,11 @@ git-merge-to() {
     if [[ "$2" == "" ]]; then
         # Use current branch(branch name).
         bn=$(git symbolic-ref --short HEAD)
-        print "merge $bn to $1"
     else
         # Save all branches in bns.
         bns=($(git branch | sed "s/\*//g" | awk '{print $1}'))
         if [[ $bns =~ $2 ]]; then
             bn=$2
-            print "merge $2 to $1"
         else
             print "Invalid branch!"
             return 1
@@ -63,6 +61,7 @@ git-merge-to() {
         print "no meger message!"
         return 1
     fi
+    print "merge $bn to $1"
     git checkout $1
     git merge --no-ff "$bn" -m "$3"
     print "$bn"
@@ -70,7 +69,7 @@ git-merge-to() {
 
 gmtm() {
     if [[ $2 == "" ]]; then
-        print "gmtm <branch> <message>"
+        print "gmtm <to be merged branch> <merge message>"
         return 1
     fi
     # $1 is the branch will be merged to master.
@@ -78,17 +77,30 @@ gmtm() {
     [[ $? != 0 ]] && return 1
     #read tn'?Input a version number to make a tag: '
     #git tag "$tn"
-    #git checkout "$bn"
+    git checkout "$bn"
 }
 
 # Merge to develop
 gmtd() {
-    [[ $2 == "" ]] && return 1
+    if [[ "$1" == "" ]]; then
+        # Use current branch(branch name).
+        bn=$(git symbolic-ref --short HEAD)
+    else
+        # Save all branches in bns.
+        bns=($(git branch | sed "s/\*//g" | awk '{print $1}'))
+        if [[ $bns =~ $1 ]]; then
+            bn=$1
+        else
+            print "Invalid branch!"
+            return 1
+        fi
+    fi
+    print "merge $bn to develop"
     git checkout develop
     # no need to create a commit if the merge
     # resolved as a fast-forward
-    git merge --ff $1 -m "$2"
-    git checkout $1
+    git merge --ff "$bn"
+    git branch -d "$bn"
 }
 
 
