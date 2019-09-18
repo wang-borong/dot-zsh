@@ -9,7 +9,6 @@
 #   @ Jason Wang
 
 
-alias ev='vim ~/.vimrc'
 alias sz='source ~/.zshrc'
 
 # Input baidu.com and enter :)
@@ -70,7 +69,6 @@ alias -s c='vim'
 alias -s h='vim'
 alias -s md='vim'
 alias -s rst='vim'
-alias -s py='vim'
 alias -s rs='vim'
 alias -s scala='vim'
 #...
