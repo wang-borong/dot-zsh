@@ -8,19 +8,14 @@
 
 # Simplify git flow.
 #   NOTE: af git flow to check the aliases can be used.
-# Add all and commit
-gaac() {
-    git add .
-    git commit
-}
 
 # Select an untracked file to add to git repository.
-gac() {
+gci() {
     mfs=($(git status -s | egrep "^[??| D| M]" | awk '{print $2}'))
     while [[ "${mfs[1]}" != "" ]]; do
         mfs=($(git status -s | egrep "^[??| D | M]" | awk '{print $2}'))
         select opt in $mfs; do
-            if [[ "$opt" != "" ]]; then
+            if [[ -n "$opt" ]]; then
                 git add $opt
                 git commit
                 break
@@ -36,79 +31,78 @@ gac() {
 }
 
 # Merge to...
+# $1 is the base branch.
+# $2 is the branch will be merged.
+# $3 is the message of this action.
+# $@ are options
 git-merge-to() {
-    # $1 is the base branch.
-    # $2 is the branch will be merged.
-    # $3 is the message of this action.
     # Check if it is a git repository.
     git status > /dev/null
     [[ $? != 0 ]] && return 1
 
-    if [[ "$2" == "" ]]; then
+    if [[ -z "$1" ]]; then
+        print "No base branch"
+        return 1
+    fi
+    bb=$1; shift
+
+    if [[ -z "$1" ]]; then
         # Use current branch(branch name).
-        bn=$(git symbolic-ref --short HEAD)
+        bm=$(git symbolic-ref --short HEAD)
     else
-        # Save all branches in bns.
-        bns=($(git branch | sed "s/\*//g" | awk '{print $1}'))
-        if [[ $bns =~ $2 ]]; then
-            bn=$2
+        # Save all branches in bms.
+        bms=($(git branch | sed "s/\*//g" | awk '{print $1}'))
+        if [[ $bms =~ $1 ]]; then
+            bm=$1
         else
             print "Invalid branch!"
             return 1
         fi
     fi
-    if [[ $3 == "" ]]; then
+    shift
+    if [[ -z "$1" ]]; then
         print "no meger message!"
         return 1
     fi
-    print "merge $bn to $1"
-    git checkout $1
-    git merge --no-ff "$bn" -m "$3"
-    print "$bn"
+    msg=$1; shift
+
+    print "merge $bm to $bb"
+    git checkout $bb
+    git merge "$@" "$bm" -m "$msg"
+    print "$bm"
 }
 
 gmtm() {
-    if [[ $2 == "" ]]; then
-        print "gmtm <to be merged branch> <merge message>"
+    if [[ $# == 1 ]]; then
+        bm=""
+        msg="$1"
+    elif [[ $# == 2 ]]; then
+        bm="$1"
+        msg="$2"
+    else
+        print "gmtm [to be merged branch] <merge message>"
         return 1
     fi
     # $1 is the branch will be merged to master.
-    bn=$(git-merge-to "master" "$1" "$2" | tail -1)
+    bm=$(git-merge-to "master" "$bm" "$msg" --no-ff | tail -1)
     [[ $? != 0 ]] && return 1
     #read tn'?Input a version number to make a tag: '
     #git tag "$tn"
-    git checkout "$bn"
+    git checkout "$bm"
 }
 
 # Merge to develop
 gmtd() {
-    if [[ "$1" == "" ]]; then
-        # Use current branch(branch name).
-        bn=$(git symbolic-ref --short HEAD)
-    else
-        # Save all branches in bns.
-        bns=($(git branch | sed "s/\*//g" | awk '{print $1}'))
-        if [[ $bns =~ $1 ]]; then
-            bn=$1
-        else
-            print "Invalid branch!"
-            return 1
-        fi
-    fi
-    print "merge $bn to develop"
-    git checkout develop
-    # no need to create a commit if the merge
-    # resolved as a fast-forward
-    git merge --ff "$bn"
-    git branch -d "$bn"
+    # $1 is the branch will be merged to develop.
+    bm=$(git-merge-to "develop" "$1" "no-massage" --ff | tail -1)
+    [[ $? != 0 ]] && return 1
+    git branch -d "$bm"
 }
 
 
 # alias[es] for for key word[s]
 # ag is conflict with alias ag='sudo apt-get' in oh-my-zsh
-af() {
-    alias | grep "$*"
-}
+af() { alias | grep "$*" }
 
 
 # grep for running process, like: 'any vim'
@@ -303,7 +297,7 @@ risl()
 {
     if [[ -d $1 ]]; then
         pth=$1
-    elif [[ "$1" == "" ]] || [[ "$1" == "-h" ]]; then
+    elif [[ -z "$1" ]] || [[ "$1" == "-h" ]]; then
         print 'Usage: risl <the path contains invalid symbolic links>'
         return 0
     else
@@ -500,21 +494,6 @@ se() {
 }
 
 
-# - sf: search files in given path
-sf() {
-    if [[ $ARGC != 3 ]]; then
-        print 'usage: sf <file> in <path>'
-    else
-        f=$1
-        if [[ $2 != 'in' ]]; then
-            print 'usage: sf <files> in <path>'
-        fi
-        p=$3
-    fi
-    find $p -name "$f"
-}
-
-
 # ww: what when
 ww() {
     emulate -L zsh
@@ -564,38 +543,31 @@ ww() {
 }
 
 
-# Copies the pathname of the current directory to the system or X Windows clipboard
-function copydir {
-  emulate -L zsh
-  print -n $PWD | clipcopy
-}
-
-
 # View a Python module in Vim.
 vipy() {
-  p=`python -c "import $1; print $1.__file__.replace('.pyc','.py')"`
-  if [ $? = 0 ]; then
-    vi -R "$p"
-  fi
-  # errors will be printed by python
+    p=`python -c "import $1; print $1.__file__.replace('.pyc','.py')"`
+    if [ $? = 0 ]; then
+        vi -R "$p"
+    fi
+    # errors will be printed by python
 }
 
 
 # Everything Git-related
 # Commit everything, use args as message.
 sci() {
-  if [ $# = 0 ]; then
-    print "usage: $0 message..." >&2
-    return 1
-  fi
-  git add -A && \
-  hr staging && \
-  git status && \
-  hr committing && \
-  git cim "$*" && \
-  hr results && \
-  git quicklog && \
-  hr done
+    if [ $# = 0 ]; then
+        print "usage: $0 message..." >&2
+        return 1
+    fi
+    git add -A && \
+    hr staging && \
+    git status && \
+    hr committing && \
+    git cim "$*" && \
+    hr results && \
+    git quicklog && \
+    hr done
 }
 
 # Compile zsh files
