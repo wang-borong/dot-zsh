@@ -3,81 +3,84 @@
 #
 
 autoload -Uz is-at-least && if ! is-at-least 5.2; then
-    print "ERROR: Zshrc didn't start. You're using zsh version ${ZSH_VERSION}, and versions < 5.2 are not supported. Update your zsh." >&2
+    print "ERROR: Zshrc didn't start." >&2
+    print "You're using unsupported version ${ZSH_VERSION} < 5.2." >&2
+    print "Update your zsh." >&2
     return 1
 fi
+
+# Returns whether the given command is executable or aliased.
+_has() { return $( whence $1 >/dev/null ) }
+
+# Functions which modify the path given a directory, but only if the directory
+# exists and is not already in the path.
+_prepend_to_path() { [ -d $1 -a -z ${path[(r)$1]} ] && path=($1 $path) }
+
+_append_to_path() { [ -d $1 -a -z ${path[(r)$1]} ] && path=($path $1) }
+
+_force_prepend_to_path() { path=($1 ${(@)path:#$1}) }
+
+_append_paths_if_nonexist() {
+    for p in $@; do
+        [[ ! -L $p ]] && _prepend_to_path $p
+    done
+}
 
 # keep things unique
 typeset -U path PATH cdpath CDPATH fpath FPATH manpath MANPATH PYTHONPATH
 # initial aliases
 unalias -a
 
-if [ -z $ZSH ]; then
-    ZSH=~/.zsh
-fi
+# Set ZSH var to ~/.zsh if it is empty
+ZSH=${ZSH:-~/.zsh}
+
+# setup interactive comments
+setopt interactivecomments
 
 export FZF_BASE=$ZSH/external/fzf
-fpath=($ZSH/functions $ZSH/completions $ZSH/plugins ${ZSH}/external/zsh-completions/src $fpath)
-autoload -Uz compaudit compinit && compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
+fpath=($ZSH/functions $ZSH/plugins
+    ${ZSH}/external/zsh-completions/src $fpath)
+autoload -Uz compaudit compinit &&
+    compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
 
 # Overridable locale support.
-if [ -z $$LC_ALL ]; then
-    export LC_ALL=C
-fi
-if [ -z $LANG ]; then
-    export LANG=en_US
-fi
+export LC_ALL=${LC_ALL:-C}
+export LANG=${LANG:-en_US.UTF-8}
 
 # THEME
-# if we have a screen, we can try a colored screen
-if [[ "$TERM" == "screen" ]]; then
-    export TERM="screen-256color"
-fi
+# If we have a screen, we can try a colored screen
+[[ "$TERM" == "screen" ]] && export TERM="screen-256color"
+# Otherwise, for colored terminal
+[[ "$TERM" == "xterm" ]] && export TERM="xterm-256color"
 
-# others, for colored terminal
-if [[ "$TERM" == "xterm" ]]; then
-    export TERM="xterm-256color"
-fi
-
-# activate ls colors, (private if possible)
+# Activate ls colors, (private if possible)
 export ZSH_DIRCOLORS="$ZSH/external/dircolors-solarized/dircolors.256dark"
-if [[ -a $ZSH_DIRCOLORS ]]; then
-    if [[ "$TERM" == *256* ]]; then
-        which dircolors > /dev/null && eval "`dircolors -b $ZSH_DIRCOLORS 2>/dev/null`"
-    else
+[[ -a $ZSH_DIRCOLORS ]] && {
+    [[ "$TERM" == *256* ]] && {
+        _has dircolors && eval "$(dircolors -b $ZSH_DIRCOLORS 2>/dev/null)"
+    } || {
         # standard colors for non-256-color terms
-        which dircolors > /dev/null && eval "`dircolors -b`"
-    fi
-else
-    which dircolors > /dev/null && eval "`dircolors -b`"
-fi
+        _has dircolors && eval "$(dircolors -b)"
+    }
+} || { _has dircolors && eval "$(dircolors -b)" }
 
 # Support colors in less
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+export LESS_TERMCAP_mb=$'\e[01;31m'
+export LESS_TERMCAP_md=$'\e[01;31m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[01;32m'
 
-if [[ ! -e ~/.zcompdump.zwc ]]; then
-    zcompile ~/.zcompdump
-fi
-if [[ ! -r ~/.zshrc.zwc ]]; then
-    zcompile ~/.zshrc
-fi
-for config_file in $ZSH/lib/**/*.zsh; do
-    [ ! -e $config_file.zwc ] && zcompile $config_file
-    . $config_file
-done
-for plugin in $ZSH/plugins/**/*.zsh; do
-    [ ! -e $plugin.zwc ] && zcompile $plugin
-    . $plugin
-done
-for custom ($ZSH/custom/*.zsh(N)); do
-    [ ! -e $custom.zwc ] && zcompile $custom
-    . $custom
+[[ ! -r ~/.zcompdump.zwc ]] && zcompile ~/.zcompdump
+[[ ! -r ~/.zshrc.zwc ]] && zcompile ~/.zshrc
+
+for dir (lib plugins custom); do
+    for f ($ZSH/$dir/**/*.zsh(N)); do
+        [[ ! -r $f.zwc ]] && zcompile $f
+        . $f
+    done
 done
 
 # PATH
@@ -94,22 +97,12 @@ else
 fi
 
 #. $ZSH/themes/spaceship-prompt/spaceship.zsh
-if _has starship; then
-    # Prerequisite Powerline font
-    eval "$(starship init zsh)"
-else
+_has starship && eval "$(starship init zsh)" ||
     . $ZSH/themes/soimort/soimort.zsh
-fi
 
-. $ZSH/external/smartcd/smartcd.zsh
 . $ZSH/external/z.lua/z.lua.plugin.zsh
 
-# setup interactive comments
-setopt interactivecomments
-
-if [[ -r ~/.zshrc.local ]]; then
-    if [[ ! -e ~/.zshrc.local.zwc ]]; then
-        zcompile ~/.zshrc.local
-    fi
+[[ -r ~/.zshrc.local ]] && {
+    [[ ! -r ~/.zshrc.local.zwc ]] && zcompile ~/.zshrc.local
     . ~/.zshrc.local
-fi
+}

@@ -8,9 +8,7 @@
 #
 
 # if it's a dumb terminal, return.
-if [[ ${TERM} == 'dumb' ]]; then
-  return 1
-fi
+[[ ${TERM} == 'dumb' ]] && return 1
 
 #
 # zsh options
@@ -50,8 +48,8 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' '+r:|?=**'
 
 # directories
 if (( ! ${+LS_COLORS} )); then
-  # Locally use same LS_COLORS definition from utility module, in case it was not set
-  local LS_COLORS='di=1;34:ln=35:so=32:pi=33:ex=31:bd=1;36:cd=1;33:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+    # Locally use same LS_COLORS definition from utility module, in case it was not set
+    local LS_COLORS='di=1;34:ln=35:so=32:pi=33:ex=31:bd=1;36:cd=1;33:su=30;41:sg=30;46:tw=30;42:ow=30;43'
 fi
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
@@ -71,14 +69,14 @@ zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 # Don't complete uninteresting users
 zstyle ':completion:*:*:*:users' ignored-patterns \
-        adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
-        clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
-        gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
-        ldap lp mail mailman mailnull man messagebus  mldonkey mysql nagios \
-        named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
-        operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
-        rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
-        usbmux uucp vcsa wwwrun xfs '_*'
+    adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
+    clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
+    gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
+    ldap lp mail mailman mailnull man messagebus  mldonkey mysql nagios \
+    named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
+    operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
+    rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
+    usbmux uucp vcsa wwwrun xfs '_*'
 
 # Man
 zstyle ':completion:*:manuals' separate-sections true
@@ -97,7 +95,7 @@ zstyle ':completion:*:rm:*' file-patterns '*:all-files'
 # If the _my_hosts function is defined, it will be called to add the ssh hosts
 # completion, otherwise _ssh_hosts will fall through and read the ~/.ssh/config
 zstyle -e ':completion:*:*:ssh:*:my-accounts' users-hosts \
-  '[[ -f ${HOME}/.ssh/config && ${key} == hosts ]] && key=my_hosts reply=()'
+    '[[ -f ${HOME}/.ssh/config && ${key} == hosts ]] && key=my_hosts reply=()'
 
 # Turn off slow git branch completion. http://stackoverflow.com/q/12175277/102704
 zstyle :completion::complete:git-checkout:argument-rest:headrefs command "git for-each-ref --format='%(refname)' refs/heads 2>/dev/null"
@@ -109,15 +107,15 @@ zstyle '*' single-ignored show
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 if [[ $COMPLETION_WAITING_DOTS = true ]]; then
-  expand-or-complete-with-dots() {
-    # toggle line-wrapping off and back on again
-    [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
-    print -Pn "%{%F{red}......%f%}"
-    [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
+    expand-or-complete-with-dots() {
+        # toggle line-wrapping off and back on again
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti rmam
+        print -Pn "%{%F{red}......%f%}"
+        [[ -n "$terminfo[rmam]" && -n "$terminfo[smam]" ]] && echoti smam
 
-    zle expand-or-complete
-    zle redisplay
-  }
-  zle -N expand-or-complete-with-dots
-  bindkey "^I" expand-or-complete-with-dots
+        zle expand-or-complete
+        zle redisplay
+    }
+zle -N expand-or-complete-with-dots
+bindkey "^I" expand-or-complete-with-dots
 fi

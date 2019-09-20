@@ -12,7 +12,7 @@
 # Select an untracked file to add to git repository.
 gci() {
     mfs=($(git status -s | egrep "^[??| D| M]" | awk '{print $2}'))
-    while [[ "${mfs[1]}" != "" ]]; do
+    while [[ -n "${mfs[1]}" ]]; do
         mfs=($(git status -s | egrep "^[??| D | M]" | awk '{print $2}'))
         select opt in $mfs; do
             if [[ -n "$opt" ]]; then
@@ -263,17 +263,6 @@ mkcd() {
         printf '`%s'\'' already exists: cd-ing.\n' "$1"
     fi
     builtin cd "$1"
-}
-
-
-# - mvt: mv something[s] to tmp
-mvt() {
-    print "mv $* to ~tmp"
-
-    for item in $*
-    do
-        mv $item ~/tmp
-    done
 }
 
 

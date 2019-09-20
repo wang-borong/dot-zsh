@@ -7,7 +7,7 @@ cd() {
             builtin cd $1 && ls --color=tty
         fi
     elif [[ -n $1 ]]; then
-        dir=$(python3 $ZSH/external/smartcd/smartcd.py $1)
+        dir=$(python3 $ZSH/custom/smartcd/smartcd.py $1)
         #print "correct $(tput setaf 1)${1}${reset}$(tput sgr0) to $(tput setaf 2)${dir}$(tput sgr0)"
         builtin cd $dir &&
         ls --color=tty

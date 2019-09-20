@@ -1,6 +1,6 @@
 external/*
-!external/smartcd/
 themes/*
 !themes/soimort/
 custom/*
+!custom/smartcd/
 *.zwc
