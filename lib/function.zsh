@@ -582,6 +582,11 @@ compile_zsh_files() {
 
 # Generate cscope database for C projects
 genctags() {
+    if ! (( $+commands[cscope] )) || ! (( $+commands[ctags] )); then
+        print "Please install cscope and ctags"
+        return 1
+    fi
+
     if [[ -n $1 ]]; then
         if [[ -d $1 ]]; then
             srcdir=$(realpath $1)
@@ -591,13 +596,16 @@ genctags() {
     else
         srcdir=$PWD
     fi
-    print "Finding files ..."
-    find "$srcdir" -name '*.[ch]' > "$srcdir/cscope.files"
 
-    print "Adding files to cscope db: $srcdir/cscope.db ..."
-    cscope -b -i "$srcdir/cscope.files"
-    rm -f $srcdir/cscope.files
+    # run in child process
+    (
+        builtin cd $srcdir
+        find . -name '*.[ch]' > "$srcdir/cscope.files"
 
-    export CSCOPE_DB="$srcdir/cscope.out"
-    print "Exported CSCOPE_DB for $(basename $srcdir)"
+        cscope -b -i cscope.files
+        rm -f cscope.files
+
+        export CSCOPE_DB="$srcdir/cscope.out"
+        ctags -R .
+    )
 }
