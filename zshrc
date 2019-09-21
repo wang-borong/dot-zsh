@@ -34,6 +34,10 @@ unalias -a
 # Set ZSH var to ~/.zsh if it is empty
 ZSH=${ZSH:-~/.zsh}
 
+# PATH
+_append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
+    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
+
 # setup interactive comments
 setopt interactivecomments
 
@@ -41,21 +45,33 @@ export FZF_BASE=$ZSH/external/fzf
 fpath=($ZSH/functions $ZSH/plugins
     ${ZSH}/external/zsh-completions/src $fpath)
 autoload -Uz compaudit compinit &&
-    compinit -C -d "${ZDOTDIR:-${HOME}}/${zcompdump_file:-.zcompdump}"
+    compinit -C -d "${HOME}/.zcompdump"
 
-# Overridable locale support.
-export LC_ALL=${LC_ALL:-en_US.UTF-8}
-export LANG=${LANG:-en_US.UTF-8}
+for f (zshrc zcompdump); do
+    [[ ! -f ~/.$f.zwc ]] && zcompile ~/.$f; done
+
+for dir (lib plugins custom); do
+    for f ($ZSH/$dir/**/*.zsh(N) $ZSH/external/z.lua/z.lua.plugin.zsh); do
+        [[ ! -r $f.zwc ]] && zcompile $f
+        . $f
+    done
+done
 
 # THEME
-# If we have a screen, we can try a colored screen
-[[ "$TERM" == "screen" ]] && export TERM="screen-256color"
-# Otherwise, for colored terminal
-[[ "$TERM" == "xterm" ]] && export TERM="xterm-256color"
+case $TERM in
+    # If we have a screen, we can try a colored screen
+    "screen")
+        export TERM=screen-256color
+        break ;;
+    # Otherwise, for colored terminal
+    "xterm")
+        export TERM=xterm-256color
+        break ;;
+esac
 
 # Activate ls colors, (private if possible)
 export ZSH_DIRCOLORS="$ZSH/external/dircolors-solarized/dircolors.256dark"
-[[ -a $ZSH_DIRCOLORS ]] && {
+[[ -r $ZSH_DIRCOLORS ]] && {
     [[ "$TERM" == *256* ]] && {
         _has dircolors && eval "$(dircolors -b $ZSH_DIRCOLORS 2>/dev/null)"
     } || {
@@ -73,20 +89,6 @@ export LESS_TERMCAP_so=$'\e[01;44;33m'
 export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[01;32m'
 
-[[ ! -r ~/.zcompdump.zwc ]] && zcompile ~/.zcompdump
-[[ ! -r ~/.zshrc.zwc ]] && zcompile ~/.zshrc
-
-for dir (lib plugins custom); do
-    for f ($ZSH/$dir/**/*.zsh(N)); do
-        [[ ! -r $f.zwc ]] && zcompile $f
-        . $f
-    done
-done
-
-# PATH
-_append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
-    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
-
 # EDITOR
 if _has nvim; then
     export EDITOR=nvim VISUAL=nvim
@@ -99,8 +101,6 @@ fi
 #. $ZSH/themes/spaceship-prompt/spaceship.zsh
 _has starship && eval "$(starship init zsh)" ||
     . $ZSH/themes/soimort/soimort.zsh
-
-. $ZSH/external/z.lua/z.lua.plugin.zsh
 
 [[ -r ~/.zshrc.local ]] && {
     [[ ! -r ~/.zshrc.local.zwc ]] && zcompile ~/.zshrc.local
