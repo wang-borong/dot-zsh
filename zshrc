@@ -100,10 +100,11 @@ else
     export EDITOR=vi VISUAL=vi
 fi
 
-#. $ZSH/themes/spaceship-prompt/spaceship.zsh
 _has starship && eval "$(starship init zsh)" ||
     . $ZSH/themes/soimort/soimort.zsh
 
+# Make LC_ALL correspond to UTF-8
+[[ -z $LC_ALL || $LC_ALL = "C" ]] && export LC_ALL=en_US.UTF-8
 [[ -r ~/.zshrc.local ]] && {
     [[ ! -r ~/.zshrc.local.zwc ]] && zcompile ~/.zshrc.local
     . ~/.zshrc.local
