@@ -47,16 +47,6 @@ fpath=($ZSH/functions $ZSH/plugins
 autoload -Uz compaudit compinit &&
     compinit -C -d "${HOME}/.zcompdump"
 
-for f (zshrc zcompdump); do
-    [[ ! -f ~/.$f.zwc ]] && zcompile ~/.$f; done
-
-for dir (lib plugins custom); do
-    for f ($ZSH/$dir/**/*.zsh(N) $ZSH/external/z.lua/z.lua.plugin.zsh); do
-        [[ ! -r $f.zwc ]] && zcompile $f
-        . $f
-    done
-done
-
 # THEME
 case $TERM in
     # If we have a screen, we can try a colored screen
@@ -79,6 +69,18 @@ export ZSH_DIRCOLORS="$ZSH/external/dircolors-solarized/dircolors.256dark"
         _has dircolors && eval "$(dircolors -b)"
     }
 } || { _has dircolors && eval "$(dircolors -b)" }
+
+for f (zshrc zcompdump); do
+    [[ ! -f ~/.$f.zwc ]] && zcompile ~/.$f
+done
+
+# Completion color should be after dircolors were setted
+for dir (lib plugins custom); do
+    for f ($ZSH/$dir/**/*.zsh(N) $ZSH/external/z.lua/z.lua.plugin.zsh); do
+        [[ ! -r $f.zwc ]] && zcompile $f
+        . $f
+    done
+done
 
 # Support colors in less
 export LESS_TERMCAP_mb=$'\e[01;31m'
