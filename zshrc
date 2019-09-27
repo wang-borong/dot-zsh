@@ -32,7 +32,7 @@ typeset -U path PATH cdpath CDPATH fpath FPATH manpath MANPATH PYTHONPATH
 unalias -a
 
 # Set ZSH var to ~/.zsh if it is empty
-ZSH=${ZSH:-~/.zsh}
+: ${ZSH:=~/.zsh}
 
 # PATH
 _append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
@@ -53,7 +53,7 @@ case $TERM in
     "screen")
         export TERM=screen-256color ;;
     # Otherwise, for colored terminal
-    "xterm")
+    *)
         export TERM=xterm-256color ;;
 esac
 
@@ -106,4 +106,4 @@ _has starship && eval "$(starship init zsh)" ||
 [[ -r ~/.zshrc.local ]] && {
     [[ ! -r ~/.zshrc.local.zwc ]] && zcompile ~/.zshrc.local
     . ~/.zshrc.local
-}
+} || { touch ~/.zshrc.local && return 0 }
