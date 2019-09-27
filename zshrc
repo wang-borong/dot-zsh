@@ -50,11 +50,12 @@ autoload -Uz compaudit compinit &&
 # THEME
 case $TERM in
     # If we have a screen, we can try a colored screen
-    "screen")
+    "screen*")
         export TERM=screen-256color ;;
     # Otherwise, for colored terminal
-    *)
+    "xterm*")
         export TERM=xterm-256color ;;
+    *) ;;
 esac
 
 # Activate ls colors, (private if possible)
