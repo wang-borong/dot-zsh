@@ -3,37 +3,32 @@ import sys
 import locale
 from functools import cmp_to_key
 
-""" The smart cd
+""" The smart cd for zsh or bash
 
-# add this function to your zshrc
+SMARTCD=$(dirname $0)
 cd() {
-    if [[ -e $1 ]]; then
-        if [[ ! -d $1 ]]; then
-            builtin cd ${1:h} && ls --color=tty
-        else
-            builtin cd $1 && ls --color=tty
-        fi
-    elif [[ -n $1 ]]; then
-        dir=$(python3 $ZSHRCD/zsh-plugins/smart-cd/smartcd.py $1)
-        #print "correct $(tput setaf 1)${1}${reset}$(tput sgr0) to $(tput setaf 2)${dir}$(tput sgr0)"
-        builtin cd $dir &&
-        ls --color=tty
-    else
-        builtin cd && ls --color=tty
-    fi
+    argvs=$(python3 $SMARTCD/smartcd.py "$@")
+    eval "builtin cd $argvs && ls --color=tty"
 }
 
 """
 
-def gen_cd_path(obj):
-    if obj.startswith('-'):
-        print(obj)
-    elif not os.path.exists(obj):
-        has = False
-        dir_name = os.path.dirname(obj)
-        base_name = os.path.basename(obj)
-        if dir_name == '':
-            dir_name = '.'
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+def gen_cd_path(p):
+    dir_name = os.path.dirname(p)
+    if dir_name == '':
+        dir_name = '.'
+    base_name = os.path.basename(p)
+
+    if p.startswith('-') or p.startswith('+'):
+        return p
+
+    if os.path.isdir(p):
+        return p
+    elif os.path.isfile(p):
+        return dir_name
+    else:
         dirs = [
                  d for d in os.listdir(dir_name)
                  if os.path.isdir(os.path.join(dir_name, d))
@@ -43,19 +38,23 @@ def gen_cd_path(obj):
 
         for d in sorted(dirs, key=cmp_to_key(locale.strcoll)):
             if d.lower().startswith(base_name.lower()):
-                has = True
-                print("{}/{}".format(dir_name, d))
-                break
-        if not has:
-            for d in sorted(dirs, key=cmp_to_key(locale.strcoll)):
-                if base_name.lower() in d.lower():
-                    has = True
-                    print("{}/{}".format(dir_name, d))
-                    break
-        if not has:
-            print(dir_name)
-    else:
-        return
+                return '{}/{}'.format(dir_name, d)
 
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-gen_cd_path(sys.argv[1])
+        for d in sorted(dirs, key=cmp_to_key(locale.strcoll)):
+            if base_name.lower() in d.lower():
+                return '{}/{}'.format(dir_name, d)
+
+        return dir_name
+
+argc = len(sys.argv)
+if argc == 1:
+    exit(0)
+elif argc == 2:
+    print(gen_cd_path(sys.argv[1]))
+elif argc == 3:
+    if (sys.argv[1].startswith('-')):
+        print('{} {}'.format(sys.argv[1], gen_cd_path(sys.argv[2])))
+    else:
+        print('{} {}'.format(sys.argv[1], sys.argv[2]))
+else:
+    print('{} {} {}'.format(sys.argv[1], sys.argv[2], sys.argv[3]))
