@@ -21,6 +21,7 @@ def gen_cd_path(p):
         dir_name = '.'
     base_name = os.path.basename(p)
 
+    # directory stack of zsh
     if p.startswith('-') or p.startswith('+'):
         return p
 
@@ -38,17 +39,17 @@ def gen_cd_path(p):
 
         for d in sorted(dirs, key=cmp_to_key(locale.strcoll)):
             if d.lower().startswith(base_name.lower()):
-                return '{}/{}'.format(dir_name, d)
+                return os.path.join(dir_name, d)
 
         for d in sorted(dirs, key=cmp_to_key(locale.strcoll)):
             if base_name.lower() in d.lower():
-                return '{}/{}'.format(dir_name, d)
+                return os.path.join(dir_name, d)
 
         return dir_name
 
 argc = len(sys.argv)
 if argc == 1:
-    exit(0)
+    pass
 elif argc == 2:
     print(gen_cd_path(sys.argv[1]))
 elif argc == 3:
