@@ -11,19 +11,11 @@
 
 # Select an untracked file to add to git repository.
 gci() {
-    mfs=($(git status -s | egrep "^[??| D| M]" | awk '{print $2}'))
-    while [[ -n "${mfs[1]}" ]]; do
-        mfs=($(git status -s | egrep "^[??| D | M]" | awk '{print $2}'))
-        select opt in $mfs; do
-            if [[ -n "$opt" ]]; then
-                git add $opt
-                git commit
-                break
-            else
-                print "Invalid selection!"
-                return 2
-            fi
-        done
+    mfs=$(git status -s | egrep "^[??| D| M]" | awk '{print $2}')
+    while [[ -n $mfs ]]; do
+        git add $(print $mfs | fzf -1)
+        git commit
+        mfs=$(git status -s | egrep "^[??| D| M]" | awk '{print $2}')
     done
     # If there are changes to be committed, commit them...
     git status -s | grep "^A" > /dev/null 2>&1
