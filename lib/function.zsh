@@ -92,6 +92,10 @@ gmtd() {
 }
 
 
+# Create git ingore file by gitignore.io
+gi() { curl -sL https://www.gitignore.io/api/$@ }
+
+
 # alias[es] for for key word[s]
 # ag is conflict with alias ag='sudo apt-get' in oh-my-zsh
 af() { alias | grep "$*" }
