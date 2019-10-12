@@ -13,7 +13,9 @@
 gci() {
     mfs=$(git status -s | egrep "^[??| D| M]" | awk '{print $2}')
     while [[ -n $mfs ]]; do
-        git add $(print $mfs | fzf -1)
+        file=$(print $mfs | fzf -1)
+        [[ -z $file ]] && return 1
+        git add $file
         git commit
         mfs=$(git status -s | egrep "^[??| D| M]" | awk '{print $2}')
     done
