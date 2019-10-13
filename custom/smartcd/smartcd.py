@@ -47,15 +47,26 @@ def gen_cd_path(p):
 
         return dir_name
 
+def prepend_backslash_to_special_charactor(string, special_chars):
+    for c in special_chars:
+        if c in string:
+            string = string.replace(c, '\\{}'.format(c))
+
+    return string
+
 argc = len(sys.argv)
 if argc == 1:
-    pass
+    cdpath = ''
 elif argc == 2:
-    print(gen_cd_path(sys.argv[1]))
+    cdpath = gen_cd_path(sys.argv[1])
 elif argc == 3:
     if (sys.argv[1].startswith('-')):
-        print('{} {}'.format(sys.argv[1], gen_cd_path(sys.argv[2])))
+        cdpath = '{} {}'.format(sys.argv[1], gen_cd_path(sys.argv[2]))
     else:
-        print('{} {}'.format(sys.argv[1], sys.argv[2]))
+        cdpath = '{} {}'.format(sys.argv[1], sys.argv[2])
 else:
-    print('{} {} {}'.format(sys.argv[1], sys.argv[2], sys.argv[3]))
+    cdpath = '{} {} {}'.format(sys.argv[1], sys.argv[2], sys.argv[3])
+
+special_chars = [' ', '!', '$', '^', '&', '*', '=']
+cdpath = prepend_backslash_to_special_charactor(cdpath, special_chars)
+print(cdpath)
