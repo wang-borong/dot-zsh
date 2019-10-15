@@ -51,6 +51,8 @@ def prepend_backslash_to_special_charactor(string, special_chars):
     for c in special_chars:
         if c in string:
             string = string.replace(c, '\\{}'.format(c))
+    if ' ' in string and not string.startswith('-'):
+        string = string.replace(c, '\\{}'.format(c))
 
     return string
 
@@ -67,6 +69,6 @@ elif argc == 3:
 else:
     cdpath = '{} {} {}'.format(sys.argv[1], sys.argv[2], sys.argv[3])
 
-special_chars = [' ', '!', '$', '^', '&', '*', '=']
+special_chars = ['!', '$', '^', '&', '*', '=']
 cdpath = prepend_backslash_to_special_charactor(cdpath, special_chars)
 print(cdpath)
