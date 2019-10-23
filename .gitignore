@@ -3,4 +3,5 @@ themes/*
 !themes/soimort/
 custom/*
 !custom/smartcd/
+!custom/fzf_options.zsh
 *.zwc
