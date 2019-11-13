@@ -20,6 +20,7 @@ _gen_fzf_default_opts() {
 
 # Solarized Dark color scheme for fzf
 export FZF_DEFAULT_OPTS="
+--ansi
 --color fg:-1,bg:-1,hl:$blue,fg+:$base2,bg+:$base02,hl+:$blue
 --color info:$yellow,prompt:$yellow,pointer:$base3,marker:$base3,spinner:$yellow
 --bind 'ctrl-u:half-page-up,ctrl-d:half-page-down,alt-u:preview-page-up,alt-d:preview-page-down,alt-j:preview-down,alt-k:preview-up,ctrl-v:toggle-preview,ctrl-r:kill-line'
