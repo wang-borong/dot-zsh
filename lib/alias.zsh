@@ -23,39 +23,42 @@ alias sudo='sudo '
 alias v='vim'
 alias gv='gvim'
 alias cx='chmod +x'
-alias egrep="egrep --color"
+alias egrep='egrep --color'
 
 # Listing stuff
+function command_ls {
+    command ls $@ --color=auto
+}
 # Execute {ls -lSrah}
-alias dir="command ls -lSrah"
+alias dir='command_ls -lSrah'
 # Only show dot-directories
-alias lad='command ls -d .*(/)'
+alias lad='command_ls -d .*(/)'
 # Only show dot-files
-alias lsa='command ls -a .*(.)'
+alias lsa='command_ls -a .*(.)'
 # Only files with setgid/setuid/sticky flag
-alias lss='command ls -l *(s,S,t)'
+alias lss='command_ls -l *(s,S,t)'
 # Only show symlinks
-alias lsl='command ls -l *(@)'
+alias lsl='command_ls -l *(@)'
 # Display only executables
-alias lsx='command ls -l *(*)'
+alias lsx='command_ls -l *(*)'
 # Display world-{readable,writable,executable} files
-alias lsw='command ls -ld *(R,W,X.^ND/)'
+alias lsw='command_ls -ld *(R,W,X.^ND/)'
 # Display the ten biggest files
-alias lsbig="command ls -flh *(.OL[1,10])"
+alias lsbig='command_ls -flh *(.OL[1,10])'
 # Only show directories
-alias lsd='command ls -d *(/)'
+alias lsd='command_ls -d *(/)'
 # Only show empty directories
-alias lse='command ls -d *(/^F)'
+alias lse='command_ls -d *(/^F)'
 # Display the ten newest files
-alias lsnew="command ls -rtlh *(D.om[1,10])"
+alias lsnew='command_ls -rtlh *(D.om[1,10])'
 # Display the ten oldest files
-alias lsold="command ls -rtlh *(D.Om[1,10])"
+alias lsold='command_ls -rtlh *(D.Om[1,10])'
 # Display the ten smallest files
-alias lssmall="command ls -Srl *(.oL[1,10])"
+alias lssmall='command_ls -Srl *(.oL[1,10])'
 # Display the ten newest directories and ten newest .directories
-alias lsnewdir="command ls -rthdl *(/om[1,10]) .*(D/om[1,10])"
+alias lsnewdir='command_ls -rthdl *(/om[1,10]) .*(D/om[1,10])'
 # Display the ten oldest directories and ten oldest .directories
-alias lsolddir="command ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])"
+alias lsolddir='command_ls -rthdl *(/Om[1,10]) .*(D/Om[1,10])'
 
 # Just input what you want to decompress in your zsh.
 # Replaced by se function
