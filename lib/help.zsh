@@ -52,6 +52,9 @@ update-zsh-external() {
     opwd=$PWD
     for ext in ${extern}; do
         builtin cd $ZSH/external/$ext && git pull >/dev/null 2>&1
+        if [[ $ext == "fzf" ]]; then
+            (cd $ZSH/external/$ext && ./install --bin)
+        fi
         print "$ext updated"
     done
     builtin cd $opwd
