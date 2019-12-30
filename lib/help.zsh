@@ -53,7 +53,7 @@ update-zsh-external() {
     for ext in ${extern}; do
         builtin cd $ZSH/external/$ext && git pull >/dev/null 2>&1
         if [[ $ext == "fzf" ]]; then
-            (cd $ZSH/external/$ext && ./install --bin)
+            (builtin cd $ZSH/external/$ext && ./install --bin >/dev/null 2>&1)
         fi
         print "$ext updated"
     done
