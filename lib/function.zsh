@@ -30,7 +30,6 @@ gi() { curl -sL https://www.gitignore.io/api/$@ }
 
 
 # alias[es] for for key word[s]
-# ag is conflict with alias ag='sudo apt-get' in oh-my-zsh
 af() { alias | grep "$*" }
 
 
@@ -241,14 +240,14 @@ sa() {
             o) only=1 ;;
             a) multi=1 ;;
             h)
-                printf 'usage: salias [-hoa] <alias-expression>\n'
+                printf "usage: $0 [-hoa] <alias-expression>\n"
                 printf '  -h      shows this help text.\n'
                 printf '  -a      replace '\'' ; '\'' sequences with '\'' ; sudo '\''.\n'
                 printf '          be careful using this option.\n'
                 printf '  -o      only sets an alias if a preceding sudo would be needed.\n'
                 return 0
                 ;;
-            *) salias -h >&2; return 1 ;;
+            *) $0 -h >&2; return 1 ;;
         esac
     done
     shift "$((OPTIND-1))"
@@ -529,7 +528,10 @@ genctags() {
 }
 
 print-color-codes() {
-    for code in {0..255}; do
-        echo -e "\e[38;5;${code}m"'\\e[38;5;'"$code"m"\e[0m"
+    for code in {0..64}; do
+        print -c "\e[38;5;$((code*4))m"'\\e[38;5;'"$((code*4))"m"\e[0m" \
+            "\e[38;5;$((code*4+1))m"'\\e[38;5;'"$((code*4+1))"m"\e[0m"  \
+            "\e[38;5;$((code*4+2))m"'\\e[38;5;'"$((code*4+2))"m"\e[0m"  \
+            "\e[38;5;$((code*4+3))m"'\\e[38;5;'"$((code*4+3))"m"\e[0m"
     done
 }
