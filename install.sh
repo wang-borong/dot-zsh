@@ -9,3 +9,8 @@ cd - && cd fzf && ./install --bin
 
 cd - && [[ ! -d custom ]] && mkdir custom
 cd ~ && ln -s .zsh/zshrc .zshrc
+
+# Setup needed dependencies
+# for smartcd
+pip install --user fuzzywuzzy
+pip install --user python-Levenshtein
