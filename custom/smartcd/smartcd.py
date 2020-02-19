@@ -2,14 +2,17 @@ import sys
 import locale
 from pathlib import Path
 from fuzzywuzzy import process
+from termcolor import cprint
 
 """ The smart cd for zsh or bash
 
 SMARTCD=$(dirname $0)
 cd() {
     argvs=$(python3 $SMARTCD/smartcd.py "$@")
-    eval "builtin cd $argvs && ls --color=tty"
+    eval "builtin cd $argvs >/dev/null 2>&1 && ls --color=tty"
 }
+# zsh chdir
+alias chdir='cd'
 
 """
 
@@ -43,7 +46,8 @@ class CdArgs:
                     if str(basename).lower() in str(d).lower() and d.is_dir():
                         return d
 
-        # return the original directory name
+        cprint('smartcd: can\'t find a similar directory for {}'
+               .format(p), 'red', attrs=['bold'], file=sys.stderr)
         return p
 
     # handle the original cd arguments and return the handled one
@@ -51,12 +55,19 @@ class CdArgs:
         cdargs = list()
         for arg in self.args:
             if not arg.startswith('-') and \
-            not arg.startswith('+') and \
-            not arg.isnumeric():
+                    not arg.startswith('+'):
                 cd_path = self.find_path(Path(arg))
                 cdargs.append('\'{}\''.format(cd_path))
+                break
             else:
                 cdargs.append(arg)
+                if arg[1:].isnumeric():
+                    break
+
+        if len(cdargs) < len(self.args):
+            cprint('smartcd: correct cd arguments to {}'.format(' '.join(cdargs)),
+                   'green', attrs=['bold'], file=sys.stderr)
+
         return cdargs
 
 cdArgs = CdArgs(sys.argv[1:])
