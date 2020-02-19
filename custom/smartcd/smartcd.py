@@ -15,44 +15,50 @@ cd() {
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-class CdPath :
-    def __init__(self, p):
-        self.p = p
-        self.dirname = p.parent
-        self.basename = p.name
+class CdArgs:
+    def __init__(self, args, fuzzy=True):
+        self.args = args
+        self.fuzzy = fuzzy
 
-    def get(self):
-        if self.p.is_dir():
+    def find_path(self, p):
+        dirname = p.parent
+        basename = p.name
+        if p.is_dir():
             # If the given directory exists, it will be returned directly.
-            return self.p
-        elif self.p.is_file():
+            return p
+        elif p.is_file():
             # If a file given, the directory of the file will be returned.
-            return self.dirname
+            return dirname
         else:
-            # get all dir path string
-            dirs = [str(d) for d in self.dirname.iterdir() if d.is_dir()]
-            # fuzzy finding the most similar dir path
-            firstdir = process.extractOne(str(self.basename).lower(), dirs)
-            if firstdir != None:
-                return firstdir[0]
+            if self.fuzzy:
+                # get all dir path string
+                dirs = [str(d) for d in dirname.iterdir() if d.is_dir()]
+                # fuzzy finding the most similar directory name
+                firstdir = process.extractOne(str(basename), dirs)
+                if firstdir != None and firstdir[1] > 0:
+                        return firstdir[0]
             else:
-                # If there is no directory can be finded, the current directory
-                # name will be returned.
-                return '.'
+                # or find the directory name simplely
+                for d in dirname.iterdir():
+                    if str(basename).lower() in str(d).lower() and d.is_dir():
+                        return d
 
-# handle the original cd arguments and return the handled one
-def get_cdargs(args):
-    cdargs = list()
-    for arg in args:
-        if not arg.startswith('-') and \
-           not arg.startswith('+') and \
-           not arg.isnumeric():
-            cdPath = CdPath(Path(arg))
-            cd_path = cdPath.get()
-            cdargs.append('\'{}\''.format(cd_path))
-        else:
-            cdargs.append(arg)
-    return cdargs
+        # return the original directory name
+        return p
 
+    # handle the original cd arguments and return the handled one
+    def get(self):
+        cdargs = list()
+        for arg in self.args:
+            if not arg.startswith('-') and \
+            not arg.startswith('+') and \
+            not arg.isnumeric():
+                cd_path = self.find_path(Path(arg))
+                cdargs.append('\'{}\''.format(cd_path))
+            else:
+                cdargs.append(arg)
+        return cdargs
+
+cdArgs = CdArgs(sys.argv[1:])
 # return all handled arguments to shell
-print(' '.join(get_cdargs(sys.argv[1:])))
+print(' '.join(cdArgs.get()))
