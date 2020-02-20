@@ -1,5 +1,5 @@
 # - Smart cd
-SMARTCD_SCRIPT = "${0:A:h}/smartcd.py"
+SMARTCD_SCRIPT="${0:A:h}/smartcd.py"
 cd() {
     argvs=$(python3 $SMARTCD_SCRIPT "$@")
     if [[ $? == 0 ]]; then
