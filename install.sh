@@ -14,3 +14,4 @@ cd ~ && ln -s .zsh/zshrc .zshrc
 # for smartcd
 pip install --user fuzzywuzzy
 pip install --user python-Levenshtein
+pip install --user termcolor
