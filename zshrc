@@ -36,7 +36,7 @@ unalias -a
 
 # PATH
 _append_paths_if_nonexist /bin /sbin /usr/bin /usr/sbin \
-    /usr/local/bin /usr/local/sbin ~/.local/bin ~/bin
+    /usr/local/bin /usr/local/sbin ~/.local/bin ~/.bin
 
 # setup interactive comments
 setopt interactivecomments
