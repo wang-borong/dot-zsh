@@ -5,4 +5,5 @@ custom/*
 !custom/smartcd/
 !custom/fzf_options.zsh
 !custom/proxy.zsh
+!custom/key-bindings.zsh
 *.zwc
