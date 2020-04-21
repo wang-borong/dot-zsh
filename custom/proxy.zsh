@@ -6,14 +6,11 @@ if (( $+commands[lantern] )); then
             local proxy_ip=$(echo $proxy | awk -F':' '{print $1}')
             local proxy_port=$(echo $proxy | awk -F':' '{print $2}')
 
-            export http_proxy="$proxy" \
-                https_proxy="$proxy" \
-                ftp_proxy="$proxy" \
-                rsync_proxy="$proxy"
+            export {http,https,ftp,rsync}_proxy="$proxy"
 
             export JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=$proxy_ip -Dhttp.proxyPort=$proxy_port"
         elif [[ $1 == "off" ]]; then
-            unset http_proxy https_proxy ftp_proxy rsync_proxy JAVA_OPTS
+            unset {http,https,ftp,rsync}_proxy JAVA_OPTS
         else
             print "Usage: proxy [on|off]"
         fi
