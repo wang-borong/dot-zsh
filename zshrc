@@ -67,7 +67,7 @@ export ZSH_DIRCOLORS="$ZSH/external/dircolors-solarized/dircolors.256dark"
     }
 } || { _has dircolors && eval "$(dircolors -b)" }
 
-for f (zshrc zcompdump); do
+for f (zshrc); do
     [[ ! -f ~/.$f.zwc ]] && zcompile ~/.$f
 done
 
