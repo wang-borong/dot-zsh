@@ -44,6 +44,7 @@ setopt interactivecomments
 export FZF_BASE=$ZSH/external/fzf
 fpath=($ZSH/functions $ZSH/plugins ${ZSH}/external/zsh-completions/src $fpath)
 autoload -Uz compinit compaudit
+compinit -C
 
 # THEME
 case $TERM in
@@ -106,6 +107,3 @@ _has starship && eval "$(starship init zsh)" ||
     [[ ! -r ~/.zshrc.local.zwc ]] && zcompile ~/.zshrc.local
     . ~/.zshrc.local
 } || { touch ~/.zshrc.local && return 0 }
-
-# regenerate compdump file for command completions
-compinit
