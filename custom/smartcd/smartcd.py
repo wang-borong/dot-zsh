@@ -1,8 +1,27 @@
 import sys
 import locale
 from pathlib import Path
-from fuzzywuzzy import process
-from termcolor import cprint
+
+try:
+    from fuzzywuzzy import process
+except ImportError:
+    # install it
+    import subprocess
+    subprocess.call('pip install --user fuzzywuzzy python-Levenshtein',
+                    shell=True)
+    from fuzzywuzzy import process
+except Exception as e:
+    print(e.__class__.__name__ + ": " + e.message)
+
+try:
+    from termcolor import cprint
+except ImportError:
+    import subprocess
+    subprocess.call('pip install --user termcolor',
+                    shell=True)
+    from termcolor import cprint
+except Exception as e:
+    print(e.__class__.__name__ + ": " + e.message)
 
 """ The smart cd for zsh or bash
 
