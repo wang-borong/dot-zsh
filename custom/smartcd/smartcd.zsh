@@ -1,5 +1,12 @@
 # - Smart cd
 SMARTCD_SCRIPT="${0:A:h}/smartcd.py"
+# make it compatiable with debian like OS
+if [[ $(python --version 2>&1 | grep 2.7) != "" ]]; then
+    PYTHONCD=python3
+else
+    PYTHONCD=python
+fi
+
 cd() {
     argvs=$(python $SMARTCD_SCRIPT "$@")
     if [[ $? == 0 ]]; then
