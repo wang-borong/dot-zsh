@@ -8,7 +8,7 @@ else
 fi
 
 cd() {
-    argvs=$(python $SMARTCD_SCRIPT "$@")
+    argvs=$($PYTHONCD $SMARTCD_SCRIPT "$@")
     if [[ $? == 0 ]]; then
         eval "builtin cd $argvs >/dev/null 2>&1 && ls --color=auto"
     else
